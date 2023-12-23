@@ -14,7 +14,7 @@
     <AssemblyVersion>0.1.0</AssemblyVersion>
     <!-- Know what you're doing and need more customization? Here you go! -->
     <LangVersion>10</LangVersion>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net481</TargetFramework>
     <IsPackable>false</IsPackable>
     <PackageId>BetterLobby</PackageId>
   </PropertyGroup>
