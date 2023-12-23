@@ -19,6 +19,7 @@ public class BetterLobby : BaseUnityPlugin
     {
         Logger = base.Logger;
         On.LobbyMenu.OnEnable += On_LobbyMenu_OnEnable;
+        On.LobbyMenu.LaunchMatch += On_LobbyMenu_LaunchMatch;
     }
 
     private static void On_LobbyMenu_OnEnable(On.LobbyMenu.orig_OnEnable orig, LobbyMenu self)
@@ -36,6 +37,15 @@ public class BetterLobby : BaseUnityPlugin
         if (clientPlayer.type == LobbyPlayer.Type.Host)
         {
             self.difficultySelectorButtons.Do(Destroy);
+        }
+    }
+    
+    private static void On_LobbyMenu_LaunchMatch(On.LobbyMenu.orig_LaunchMatch orig, LobbyMenu self)
+    {
+        // Only start match if all players are ready
+        if (self.lobby.players.TrueForAll(player => player.isReady))
+        {
+            orig(self);
         }
     }
 }
