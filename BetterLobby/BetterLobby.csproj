@@ -10,13 +10,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <!-- Change these values with your own -->
-    <AssemblyName>ExamplePlugin</AssemblyName>
-    <RootNamespace>ExamplePlugin</RootNamespace>
+    <RootNamespace>AetharNet.Mods.ZumbiBlocks2.BetterLobby</RootNamespace>
     <AssemblyVersion>0.1.0</AssemblyVersion>
     <!-- Know what you're doing and need more customization? Here you go! -->
     <LangVersion>10</LangVersion>
     <TargetFramework>net6.0</TargetFramework>
     <IsPackable>false</IsPackable>
+    <PackageId>BetterLobby</PackageId>
   </PropertyGroup>
 
   <!-- Base references for all target frameworks -->
