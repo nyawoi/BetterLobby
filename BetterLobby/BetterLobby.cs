@@ -1,4 +1,7 @@
 ﻿using BepInEx;
+using BepInEx.Logging;
+using HarmonyLib;
+using UnityEngine;
 
 namespace AetharNet.Mods.ZumbiBlocks2.BetterLobby;
 
@@ -9,10 +12,30 @@ public class BetterLobby : BaseUnityPlugin
     public const string PluginAuthor = "awoi";
     public const string PluginName = "BetterLobby";
     public const string PluginVersion = "0.1.0";
+
+    private new static ManualLogSource Logger;
     
     private void Awake()
     {
-        Logger.LogInfo($"Initialized plugin: {PluginName} ({PluginGUID}@{PluginVersion})");
-        Logger.LogInfo($"Current Zumbi Blocks 2 version is {ZBMain.instance.gameVersion}");
+        Logger = base.Logger;
+        On.LobbyMenu.OnEnable += On_LobbyMenu_OnEnable;
+    }
+
+    private static void On_LobbyMenu_OnEnable(On.LobbyMenu.orig_OnEnable orig, LobbyMenu self)
+    {
+        // Add Insane difficulty to the selector
+        self.difficultySelector.options.Add(new UISelector.Option
+        {
+            tag = "<insane>",
+            imgSprite = null,
+            textColor = new Color32(208, 89,232, 255)
+        });
+
+        // If not the lobby host, remove difficulty selector buttons
+        var clientPlayer = self.lobby.players.Find(player => player.ItsMe());
+        if (clientPlayer.type == LobbyPlayer.Type.Host)
+        {
+            self.difficultySelectorButtons.Do(Destroy);
+        }
     }
 }
