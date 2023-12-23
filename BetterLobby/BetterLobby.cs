@@ -34,7 +34,7 @@ public class BetterLobby : BaseUnityPlugin
 
         // If not the lobby host, remove difficulty selector buttons
         var clientPlayer = self.lobby.players.Find(player => player.ItsMe());
-        if (clientPlayer.type == LobbyPlayer.Type.Host)
+        if (clientPlayer.type == LobbyPlayer.Type.Client)
         {
             self.difficultySelectorButtons.Do(Destroy);
         }
