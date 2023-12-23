@@ -21,7 +21,7 @@
 
   <!-- Import Custom Values -->
   <ItemGroup>
-    <Content Include="*.csproj.user" />
+    <Content Include="BetterLobby.csproj.user" />
   </ItemGroup>
   <!-- Automatic Fallback Values -->
   <PropertyGroup>
