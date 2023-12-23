@@ -19,18 +19,10 @@
     <PackageId>BetterLobby</PackageId>
   </PropertyGroup>
 
-  <!-- Base references for all target frameworks -->
+  <!-- Import Custom Values -->
   <ItemGroup>
-    <PackageReference Include="BepInEx.Core" Version="5.*" />
-    <PackageReference Include="UnityEngine.Modules" Version="2020.3.17" IncludeAssets="compile" />
-    <PackageReference Include="ZumbiBlocks2.GameLibs" Version="2.1.0.5-alpha-2" />
+    <Content Include="*.csproj.user" />
   </ItemGroup>
-  
-  <!-- Additional references for the .NET Framework -->
-  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
-  </ItemGroup>
-  
   <!-- Automatic Fallback Values -->
   <PropertyGroup>
     <!-- Default Steam install location -->
@@ -40,6 +32,21 @@
         Condition="('$(ZumbiBlocks2_Location)' == '' Or !Exists('$(ZumbiBlocks2_Location)')) And Exists('$(DefaultSteamDir)')"
     >$(DefaultSteamDir)</ZumbiBlocks2_Location>
   </PropertyGroup>
+  
+  <!-- Base references for all target frameworks -->
+  <ItemGroup>
+    <PackageReference Include="BepInEx.Core" Version="5.*" />
+    <PackageReference Include="UnityEngine.Modules" Version="2020.3.17" IncludeAssets="compile" />
+    <PackageReference Include="ZumbiBlocks2.GameLibs" Version="2.1.0.5-alpha-2" />
+    <Reference Include="MMHOOK_Assembly-CSharp">
+      <HintPath>$(ZumbiBlocks2_Location)\BepInEx\plugins\MMHOOK\MMHOOK_Assembly-CSharp.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  
+  <!-- Additional references for the .NET Framework -->
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
+  </ItemGroup>
   
   <!-- Verify game directory exists with complete BepInEx installation -->
   <Target Name="ValidateModLoaderInstallation" BeforeTargets="Build">
