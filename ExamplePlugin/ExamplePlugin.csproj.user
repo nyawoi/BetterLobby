@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <!--
+            Custom Zumbi Blocks 2 install locations go here:
+            Installed Steam on another drive?
+            If so, this property is for you!
+            Set this property to your Zumbi Blocks 2 installation directory.
+        -->
+        <ZumbiBlocks2_Location></ZumbiBlocks2_Location>
+    </PropertyGroup>
+</Project>

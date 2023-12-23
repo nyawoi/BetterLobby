@@ -1,0 +1,76 @@
+<!--
+    Zumbi Blocks 2 (Steam) Plugin Configuration
+
+    Includes:
+    - support for custom install location
+    - automatic plugin installation
+    - validation of game installation
+    - validation of BepInEx installation
+-->
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!-- Change these values with your own -->
+    <AssemblyName>ExamplePlugin</AssemblyName>
+    <RootNamespace>ExamplePlugin</RootNamespace>
+    <AssemblyVersion>0.1.0</AssemblyVersion>
+    <!-- Know what you're doing and need more customization? Here you go! -->
+    <LangVersion>10</LangVersion>
+    <TargetFramework>net6.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <!-- Base references for all target frameworks -->
+  <ItemGroup>
+    <PackageReference Include="BepInEx.Core" Version="5.*" />
+    <PackageReference Include="UnityEngine.Modules" Version="2020.3.17" IncludeAssets="compile" />
+    <PackageReference Include="ZumbiBlocks2.GameLibs" Version="2.1.0.5-alpha-2" />
+  </ItemGroup>
+  
+  <!-- Additional references for the .NET Framework -->
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
+  </ItemGroup>
+  
+  <!-- Automatic Fallback Values -->
+  <PropertyGroup>
+    <!-- Default Steam install location -->
+    <DefaultSteamDir>C:\Program Files (x86)\Steam\steamapps\common\Zumbi Blocks 2 Open Alpha</DefaultSteamDir>
+    <!-- If no custom install location has been set, fallback to default Steam install location -->
+    <ZumbiBlocks2_Location
+        Condition="('$(ZumbiBlocks2_Location)' == '' Or !Exists('$(ZumbiBlocks2_Location)')) And Exists('$(DefaultSteamDir)')"
+    >$(DefaultSteamDir)</ZumbiBlocks2_Location>
+  </PropertyGroup>
+  
+  <!-- Verify game directory exists with complete BepInEx installation -->
+  <Target Name="ValidateModLoaderInstallation" BeforeTargets="Build">
+    <!-- If the ZumbiBlocks2_Location property has not been set, throw an error -->
+    <Error
+        Condition="'$(ZumbiBlocks2_Location)' == ''"
+        Text="Please specify your Zumbi Blocks 2 installation directory."
+    />
+    <!-- If the ZumbiBlocks2_Location directory does not exist, throw an error -->
+    <Error
+        Condition="!Exists('$(ZumbiBlocks2_Location)')"
+        Text="Could not locate Zumbi Blocks 2 installation directory. Please check your ZumbiBlocks2_Location property and try again."
+    />
+    <!-- If the BepInEx directory is missing, throw an error -->
+    <Error
+        Condition="!Exists('$(ZumbiBlocks2_Location)\BepInEx')"
+        Text="Could not locate BepInEx installation. Please download BepInEx from its repository: https://github.com/BepInEx/BepInEx/releases"
+    />
+    <!-- If the BepInEx core assembly is missing, throw an error -->
+    <Error
+        Condition="!Exists('$(ZumbiBlocks2_Location)\BepInEx\core\BepInEx.dll')"
+        Text="BepInEx installation is corrupted. Please re-download BepInEx from its repository: https://github.com/BepInEx/BepInEx/releases"
+    />
+  </Target>
+
+  <!-- Automatically deploy to the plugins directory after building assembly -->
+  <Target Name="DeployToPluginsDirectory" AfterTargets="Build">
+    <!-- Copy newly-built assembly to BepInEx plugins directory -->
+    <Copy
+        SourceFiles="$(TargetDir)$(AssemblyName).dll"
+        DestinationFolder="$(ZumbiBlocks2_Location)\BepInEx\plugins\$(AssemblyName)"
+    />
+  </Target>
+</Project>
