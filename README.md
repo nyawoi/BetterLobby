@@ -1,12 +1,14 @@
 ﻿# BetterLobby for Zumbi Blocks 2
 
-BetterLobby is a lobby enhancement mod for **Zumbi Blocks 2**.
+BetterLobby is a lobby enhancement mod for **[Zumbi Blocks 2](https://store.steampowered.com/app/1941780/Zumbi_Blocks_2_Open_Alpha/)**.
 
 ## Features
 
 - **Insane** difficulty added to the difficulty selector
 - Fixed the bug that allowed clients to interact with the difficulty selector
 - Prevents the server host from starting the game until all players are ready
+
+![BetterLobby_0 1 0_Preview](https://github.com/nyawoi/BetterLobby/assets/106277673/06c52aae-c269-45ff-8a58-567834d5c4c8)
 
 ---
 
