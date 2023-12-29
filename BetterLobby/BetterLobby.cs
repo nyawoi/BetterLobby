@@ -13,7 +13,6 @@ public class BetterLobby : BaseUnityPlugin
     public const string PluginName = "BetterLobby";
     public const string PluginVersion = "0.1.0";
     
-    private static Sprite YesIcon;
     private static Sprite NoIcon;
 
     private void Awake()
@@ -41,21 +40,17 @@ public class BetterLobby : BaseUnityPlugin
             self.difficultySelectorButtons.Do(Destroy);
         }
 
-        // Retrieve icons for visual feedback
-        foreach (var sprite in Resources.FindObjectsOfTypeAll<Sprite>())
+        orig(self);
+
+        // Retrieve icon for visual feedback
+        if (NoIcon is null)
         {
-            if (sprite is not null)
+            foreach (var sprite in Resources.FindObjectsOfTypeAll<Sprite>())
             {
-                switch (sprite.name)
+                if (sprite is not null && sprite.name == "NoIcon")
                 {
-                    case "YesIcon":
-                        YesIcon ??= sprite;
-                        break;
-                    case "NoIcon":
-                        NoIcon ??= sprite;
-                        break;
-                    default:
-                        continue;
+                    NoIcon = sprite;
+                    break;
                 }
             }
         }
@@ -73,10 +68,10 @@ public class BetterLobby : BaseUnityPlugin
     private static int On_LobbyController_AddPlayer(On.LobbyController.orig_AddPlayer orig, LobbyController self, SteamP2PConnection connection, string playername, SkinDatabase.SkinID skinid, SkinDatabase.Gender skingender, int skincolor, bool applyloadout)
     {
         // If the connection is null, the host is starting a server;
-        // otherwise, it's a player joining
-        // Set the ready icon to false
+        // otherwise, it's a player joining the lobby
         if (connection != null)
         {
+            // Set the ready icon to false
             var startButtonObject = self.lobbyMenu.startButton.transform.GetChild(1).gameObject;
             var buttonImage = startButtonObject.GetComponent<Image>();
             buttonImage.overrideSprite = NoIcon;
