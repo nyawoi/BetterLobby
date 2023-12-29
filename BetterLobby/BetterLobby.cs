@@ -26,6 +26,8 @@ public class BetterLobby : BaseUnityPlugin
     private static void On_LobbyMenu_OnEnable(On.LobbyMenu.orig_OnEnable orig, LobbyMenu self)
     {
         // Add Insane difficulty to the selector
+        // NOTE: Adding more difficulties via the selector will not work
+        // This merely exposes the currently available Insane difficulty
         self.difficultySelector.options.Add(new UISelector.Option
         {
             tag = "<insane>",
@@ -33,22 +35,27 @@ public class BetterLobby : BaseUnityPlugin
             textColor = new Color32(208, 89, 232, 255)
         });
 
-        // If not the lobby host, remove difficulty selector buttons
+        // Retrieve the client's player object
         var clientPlayer = self.lobby.players.Find(player => player.ItsMe());
+        // If not the lobby host, remove difficulty selector buttons
         if (clientPlayer.type == LobbyPlayer.Type.Client)
         {
             self.difficultySelectorButtons.Do(Destroy);
         }
 
+        // Continue with the method's normal operations
         orig(self);
 
-        // Retrieve icon for visual feedback
+        // If the NoIcon sprite has not been retrieved yet,
         if (NoIcon is null)
         {
+            // go through every sprite currently loaded,
             foreach (var sprite in Resources.FindObjectsOfTypeAll<Sprite>())
             {
+                // and find the one named "NoIcon"
                 if (sprite is not null && sprite.name == "NoIcon")
                 {
+                    // Save the NoIcon sprite to provide visual feedback
                     NoIcon = sprite;
                     break;
                 }
@@ -71,12 +78,13 @@ public class BetterLobby : BaseUnityPlugin
         // otherwise, it's a player joining the lobby
         if (connection != null)
         {
+            // Retrieve the start button icon
+            var imageComponent = GetStartButtonImageComponent(self.lobbyMenu);
             // Set the ready icon to false
-            var startButtonObject = self.lobbyMenu.startButton.transform.GetChild(1).gameObject;
-            var buttonImage = startButtonObject.GetComponent<Image>();
-            buttonImage.overrideSprite = NoIcon;
+            imageComponent.overrideSprite = NoIcon;
         }
         
+        // Continue with the method's normal operations
         return orig(self, connection, playername, skinid, skingender, skincolor, applyloadout);
     }
 
@@ -85,8 +93,23 @@ public class BetterLobby : BaseUnityPlugin
         // Call the original method first, so the `isReady` field is set
         orig(self, lobbyid, isready);
         
-        var startButtonObject = self.lobbyMenu.startButton.transform.GetChild(1).gameObject;
-        var buttonImage = startButtonObject.GetComponent<Image>();
-        buttonImage.overrideSprite = self.players.TrueForAll(player => player.isReady) ? null : NoIcon;
+        // Retrieve the start button icon
+        var imageComponent = GetStartButtonImageComponent(self.lobbyMenu);
+        // Check if all players are ready
+        var allReady = self.players.TrueForAll(player => player.isReady);
+        
+        // Override the default sprite (YesIcon) with NoIcon if not all players are ready
+        imageComponent.overrideSprite = allReady ? null : NoIcon;
+    }
+
+    private static Image GetStartButtonImageComponent(LobbyMenu lobbyMenu)
+    {
+        // The start button has three children: (0) background, (1) icon, (2) text
+        // We must first retrieve the icon's GameObject,
+        var startButtonImageObject = lobbyMenu.startButton.transform.GetChild(1).gameObject;
+        // so we can retrieve its Image component, which allows us to change its icon
+        var startButtonImageComponent = startButtonImageObject.GetComponent<Image>();
+
+        return startButtonImageComponent;
     }
 }
